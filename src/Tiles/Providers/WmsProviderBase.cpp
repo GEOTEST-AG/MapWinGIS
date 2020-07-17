@@ -24,7 +24,7 @@
  // ******************************************************
  //    GetBoundingBox()
  // ******************************************************
-CString WmsProviderBase::GetBoundingBox(CPoint &pos, int zoom, tkWmsVersion version, tkWmsBoundingBoxOrder bbo)
+CString WmsProviderBase::GetBoundingBox(CPoint &pos, int zoom)
 {
 	PointLatLng pnt1;
 	_projection->FromXYToProj(pos, zoom, pnt1);
@@ -35,38 +35,11 @@ CString WmsProviderBase::GetBoundingBox(CPoint &pos, int zoom, tkWmsVersion vers
 	_projection->FromXYToProj(pos, zoom, pnt2);
 
 	CString s;
-
-	if (bbo == tkWmsBoundingBoxOrder::bboAuto)
-	{
-		switch (version)
-		{
-		case wv13:
-			bbo = tkWmsBoundingBoxOrder::bboLongLat;
-		case wvEmpty:
-		case wv100:
-		case wv110:
-		case wvAuto:
-		case wv111:
-		default:
-			bbo = tkWmsBoundingBoxOrder::bboLongLat;
-
-		}
-	}
-
-	if (bbo == tkWmsBoundingBoxOrder::bboLatLong) {
-		s.Format("%f,%f,%f,%f",
-			MIN(pnt2.Lat, pnt1.Lat),
-			MIN(pnt1.Lng, pnt2.Lng),
-			MAX(pnt1.Lat, pnt2.Lat),
-			MAX(pnt2.Lng, pnt1.Lng));
-	}
-	else {
-		s.Format("%f,%f,%f,%f",
-			MIN(pnt1.Lng, pnt2.Lng),
-			MIN(pnt2.Lat, pnt1.Lat),
-			MAX(pnt2.Lng, pnt1.Lng),
-			MAX(pnt1.Lat, pnt2.Lat));
-	}
+	s.Format("%f,%f,%f,%f",
+		MIN(pnt2.Lat, pnt1.Lat),
+		MIN(pnt1.Lng, pnt2.Lng),
+		MAX(pnt1.Lat, pnt2.Lat),
+		MAX(pnt2.Lng, pnt1.Lng));
 
 	return s;
 }
